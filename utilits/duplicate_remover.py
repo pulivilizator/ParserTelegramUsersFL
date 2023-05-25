@@ -19,9 +19,7 @@ def duplicate_remover():
 
         new_workbook = openpyxl.Workbook()
         new_worksheet = new_workbook.active
-        new_worksheet.append(
-            ['Имя Фамилия', 'Username', 'ID', 'Номер телефона', 'Последний раз в сети', 'Бот или нет', 'Админ или нет',
-             'Чат'])
+
         for row in rows:
             new_worksheet.append(row)
         new_worksheet.auto_filter.ref = 'A1:G1'

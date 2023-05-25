@@ -19,7 +19,7 @@ async def parser_chats(app, writer: writer, chat: str):
             print(counter, chat)
             try:
                 if str(member.status) in ('ChatMemberStatus.ADMINISTRATOR', 'ChatMemberStatus.CREATORS'):
-                        data, check = getting_data(member.user, chat, True)
+                    data, check = getting_data(member.user, chat, True)
                 else:
                     data, check = getting_data(member.user, chat)
                 if not check:
@@ -38,9 +38,8 @@ async def parser_channels(app, writer: writer, chat: str):
             message
             async for message in app.get_chat_history(chat)
             if message.date.strftime('%Y%d%m') in [(datetime.now() - timedelta(days=i)).strftime('%Y%d%m')
-                                                   for i in range(paths.getint('program', 'days'))]
-                )
-
+                                                   for i in range(1, paths.getint('program', 'days') + 1)]
+        )
         async for post in posts:
             try:
                 async for i in app.get_discussion_replies(chat, post.id):

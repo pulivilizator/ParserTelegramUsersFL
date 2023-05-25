@@ -1,33 +1,82 @@
+import asyncio
+from datetime import datetime, timedelta
 from pyrogram import Client
 from pyrogram.errors.rpc_error import RPCError
 from config import config
-from excel_writer.writer import ExcelWriter
+from excel_writer.writer import writer
 from .get_dates import getting_data
 from exceptions import GetUserDataException
+import configparser
+from pyrogram.errors import FloodWait, MsgIdInvalid
+from pyrogram.enums import ChatMembersFilter
 
 
-async def parser(app, writer: ExcelWriter, chat: str):
-    counter = 0
-    async with app:
+async def parser_chats(app, writer: writer, chat: str):
+    async def async_generator():
+        counter = 0
         async for member in app.get_chat_members(chat):
             counter += 1
             print(counter, chat)
             try:
-                data, check = getting_data(member.user, chat)
+                if str(member.status) in ('ChatMemberStatus.ADMINISTRATOR', 'ChatMemberStatus.CREATORS'):
+                        data, check = getting_data(member.user, chat, True)
+                else:
+                    data, check = getting_data(member.user, chat)
                 if not check:
                     continue
-                writer.writer(data)
+                yield data
             except RPCError:
                 raise GetUserDataException('Ошибка обработки/получения данных пользователя')
+
+    await writer.writer(async_generator())
+
+
+async def parser_channels(app, writer: writer, chat: str):
+    async def async_generator():
+        counter = 0
+        posts = (
+            message
+            async for message in app.get_chat_history(chat)
+            if message.date.strftime('%Y%d%m') in [(datetime.now() - timedelta(days=i)).strftime('%Y%d%m')
+                                                   for i in range(paths.getint('program', 'days'))]
+                )
+
+        async for post in posts:
+            try:
+                async for i in app.get_discussion_replies(chat, post.id):
+                    counter += 1
+                    print(counter, chat)
+                    data, check = getting_data(i.from_user, chat)
+                    if not check:
+                        continue
+                    yield data
+            except MsgIdInvalid:
+                pass
+
+            except FloodWait as wait:
+                print(f'FlooWait: {wait.value}')
+                await asyncio.sleep(wait.value)
+
+    await writer.writer(async_generator())
+
+
+async def main_parser(app, writer: writer, chat: str):
+    async with app:
+        channel_type = str([i async for i in app.get_chat_history(chat, limit=1)][0].chat.type)
+        if channel_type == 'ChatType.SUPERGROUP':
+            await parser_chats(app, writer, chat)
+        elif channel_type == 'ChatType.CHANNEL':
+            await parser_channels(app, writer, chat)
 
 
 def start_app():
     chats = writer.get_rows()
     for chat in chats:
-        app.run(parser(app, writer, chat))
+        app.run(main_parser(app, writer, chat))
 
 
-session_data = config()
-writer = ExcelWriter()
+paths = configparser.ConfigParser()
+paths.read('config.ini', encoding='utf-8')
+session_data = config(paths.get('program', 'env'))
 writer.create_file()
 app = Client("session", api_id=int(session_data.api_id), api_hash=session_data.api_hash)

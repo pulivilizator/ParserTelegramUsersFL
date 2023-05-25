@@ -4,15 +4,15 @@ class CreateSessionException(Exception):
 class EnvException(Exception):
     """Обишка считывания окружения"""
 
-class GetFileExeption(Exception):
+class GetFileException(Exception):
     """Ошибка считывания файла на входе(файл не найден)"""
 
 
-class WriteFileExeption(Exception):
+class WriteFileException(Exception):
     """Ошибка записи в файл(файл не найден)"""
 
 
-class CreateFileExeption(Exception):
+class CreateFileException(Exception):
     """Ошибка создания файла"""
 
 class GetUserDataException(Exception):

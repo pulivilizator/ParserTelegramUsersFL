@@ -1,19 +1,23 @@
 from pyrogram.types.user_and_chats.user import User
 
 
-def getting_data(member: User, chat):
-    name = _name(member)
-    bot = 'бот' if member.is_bot else 'не бот'
-    last_online = _last_online(member)
-    chat = _chat(chat)
-    data = [name,
-            member.username,
-            member.id,
-            member.phone_number,
-            last_online,
-            bot,
-            chat]
-    return data, last_online
+def getting_data(member: User, chat, admin=False):
+    if member:
+        name = _name(member)
+        bot = 'бот' if member.is_bot else 'не бот'
+        admin_status = 'Администратор' if admin else 'Не администратор'
+        last_online = _last_online(member)
+        chat = _chat(chat)
+        data = [name,
+                member.username,
+                member.id,
+                member.phone_number,
+                last_online,
+                bot,
+                admin_status,
+                chat]
+        return data, last_online
+    return None, None
 
 
 def _name(member: User):

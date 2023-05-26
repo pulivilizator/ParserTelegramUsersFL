@@ -1,5 +1,7 @@
 # Парсер юзеров из комментариев каналов и чатов.
 
+Установка зависимостей: pip install -r requirements.txt
+
 Для парсинга введите api_id и api_hash в .env
 
 Настройте config.ini

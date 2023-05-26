@@ -14,12 +14,16 @@ from pyrogram.enums import ChatMembersFilter
 async def parser_chats(app, writer: writer, chat: str):
     async def async_generator():
         counter = 0
+        admins = app.get_chat_members(chat, filter=ChatMembersFilter.ADMINISTRATORS)
+        async for user in admins:
+            data, chek = getting_data(user.user, chat, True)
+            yield data
         async for member in app.get_chat_members(chat):
             counter += 1
             print(counter, chat)
             try:
                 if str(member.status) in ('ChatMemberStatus.ADMINISTRATOR', 'ChatMemberStatus.CREATORS'):
-                    data, check = getting_data(member.user, chat, True)
+                    continue
                 else:
                     data, check = getting_data(member.user, chat)
                 if not check:

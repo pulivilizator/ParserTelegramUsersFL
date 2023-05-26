@@ -9,4 +9,7 @@
 Можно запустить парсер.
 
 Если сесиия не создана, то следуйте инструкциям в программе для ее создания.
-![image](https://github.com/pulivilizator/ParserTelegramUsers/assets/112427972/afc3d87f-fbdd-4a45-baea-e5e9c6489d0e)
+
+Результат будет выглядеть примерно так:
+
+![image](https://github.com/pulivilizator/ParserTelegramUsers/assets/112427972/737469e5-306f-449a-a102-022d21376413)

@@ -14,4 +14,5 @@
 
 Результат будет выглядеть примерно так:
 
-![image](https://github.com/pulivilizator/ParserTelegramUsers/assets/112427972/737469e5-306f-449a-a102-022d21376413)
+![image](https://github.com/pulivilizator/ParserTelegramUsersFL/assets/112427972/92ada226-f30a-405f-a18f-b712361e087d)
+
